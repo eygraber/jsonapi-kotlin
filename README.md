@@ -35,7 +35,7 @@ val document = json.decodeFromString<JsonApiDocument>(string)
 val document = json.decodeFromJsonElement<JsonApiDocument>(jsonObject)
 ```
 
-This will return a generic `JsonApiDocument`. If you know the specific type of `JsonApiDocument` you are working with, you can explicitly specify it so that you don't need to case:
+This will return a generic `JsonApiDocument`. If you know the specific type of `JsonApiDocument` you are working with, you can specify it explicitly so that you don't need to cast:
 
 ```kotlin
 val resource = json.decodeFromString<JsonApiDocument.Resource>(string)
