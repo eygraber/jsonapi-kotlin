@@ -15,7 +15,11 @@ public data class JsonApiResource(
   public val relationships: Map<String, JsonApiRelationship>? = null,
   public val links: JsonApiLinks? = null,
   public val meta: JsonObject? = null,
-)
+) {
+  public fun requireIdOrLid(): String = requireNotNull(id ?: lid) {
+    "A JsonApiResource must have a non null id or a non null lid"
+  }
+}
 
 public fun List<JsonApiResource>.find(id: String, type: String): JsonApiResource? = find { resource ->
   (resource.id == id || resource.lid == id) && resource.type == type
