@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.eygraber:jsonapi-kotlin:0.2.0")
+  implementation("com.eygraber:jsonapi-kotlin:0.2.1")
   
   // kotlinx.serialization json is used for the actual serialization
   implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:<latest version>")
