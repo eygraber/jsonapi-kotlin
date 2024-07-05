@@ -3,6 +3,9 @@ package com.eygraber.jsonapi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
+/**
+ * https://jsonapi.org/format/#document-top-level
+ */
 @Suppress("SERIALIZER_TYPE_INCOMPATIBLE")
 @Serializable(with = JsonApiDocumentSerializer::class)
 public sealed interface JsonApiDocument {

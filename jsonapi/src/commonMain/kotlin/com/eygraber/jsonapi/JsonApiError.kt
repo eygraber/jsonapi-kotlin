@@ -3,6 +3,9 @@ package com.eygraber.jsonapi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
+/**
+ * https://jsonapi.org/format/#error-objects
+ */
 @Serializable
 public data class JsonApiError(
   public val id: String? = null,

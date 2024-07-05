@@ -14,6 +14,9 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonObject
 
+/**
+ * https://jsonapi.org/format/#document-resource-object-linkage
+ */
 @Serializable(with = JsonApiResourceLinkage.Serializer::class)
 public sealed class JsonApiResourceLinkage {
   @Serializable
