@@ -3,6 +3,9 @@ package com.eygraber.jsonapi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
+/**
+ * https://jsonapi.org/format/#document-resource-identifier-objects
+ */
 @Serializable
 public data class JsonApiResourceIdentifier(
   public val id: String? = null,

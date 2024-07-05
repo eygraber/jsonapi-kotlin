@@ -21,6 +21,9 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.put
 
+/**
+ * https://jsonapi.org/format/#auto-id--link-objects
+ */
 @Serializable(with = JsonApiLink.Serializer::class)
 public data class JsonApiLink(
   public val href: String,

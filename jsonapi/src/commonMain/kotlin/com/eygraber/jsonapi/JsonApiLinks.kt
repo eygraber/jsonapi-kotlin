@@ -14,6 +14,9 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 
+/**
+ * https://jsonapi.org/format/#document-links
+ */
 @Serializable(with = JsonApiLinks.Serializer::class)
 public data class JsonApiLinks(
   public val self: JsonApiLink? = null,
