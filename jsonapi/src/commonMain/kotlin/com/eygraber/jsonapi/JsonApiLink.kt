@@ -30,6 +30,12 @@ public data class JsonApiLink(
   public val type: String? = null,
   public val hrefLang: List<String>? = null,
   public val meta: JsonObject? = null,
+  /**
+   * Used to determine if this JsonApiLink was originally serialized as a primitive.
+   * Serializing a JsonApiLink as a String is a compact way of storing a JsonApiLink that just has an [href].
+   * If `true`, when this JsonApiLink is serialized it will be serialized as a primitive instead of an object.
+   */
+  private val shouldSerializeHrefAsPrimitive: Boolean = true,
 ) {
   internal object Serializer : KSerializer<JsonApiLink> {
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("JsonApiLink") {
@@ -44,8 +50,8 @@ public data class JsonApiLink(
 
     override fun serialize(encoder: Encoder, value: JsonApiLink) {
       (encoder as JsonEncoder).encodeJsonElement(
-        if (value.rel == null && value.describedBy == null && value.title == null &&
-          value.type == null && value.hrefLang == null && value.meta == null
+        if(value.shouldSerializeHrefAsPrimitive && value.rel == null && value.describedBy == null &&
+          value.title == null && value.type == null && value.hrefLang == null && value.meta == null
         ) {
           JsonPrimitive(value.href)
         }
@@ -66,7 +72,7 @@ public data class JsonApiLink(
     override fun deserialize(decoder: Decoder): JsonApiLink {
       require(decoder is JsonDecoder)
       return when(val jsonElement = decoder.decodeJsonElement()) {
-        is JsonPrimitive -> JsonApiLink(href = jsonElement.content)
+        is JsonPrimitive -> JsonApiLink(href = jsonElement.content, shouldSerializeHrefAsPrimitive = true)
         is JsonObject -> {
           val jsonObject = jsonElement.jsonObject
           JsonApiLink(
@@ -83,6 +89,7 @@ public data class JsonApiLink(
               )
             },
             meta = jsonObject["meta"]?.jsonObject,
+            shouldSerializeHrefAsPrimitive = false,
           )
         }
 
