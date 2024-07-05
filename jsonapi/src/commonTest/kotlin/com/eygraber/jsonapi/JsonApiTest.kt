@@ -11,6 +11,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFails
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class JsonApiTest {
   private val json = Json {
@@ -20,6 +21,16 @@ class JsonApiTest {
   @Test
   fun single_resource() {
     val resource = assertComparisons<JsonApiDocument.Resource>(SingleResourceJson)
+
+    assertEquals(resource, resource.asResource)
+    assertEquals(resource, resource.asResourceOrErrors)
+    assertNotNull(resource.asResourceOrNull)
+    assertNotNull(resource.asResourceOrErrorsOrNull)
+    assertNull(resource.asResourcesOrNull)
+    val throwable = assertFails {
+      resource.asResources
+    }
+    assertEquals("JsonApiDocument is not a Resources; is Resource", throwable.message)
 
     assertEquals("1", resource.data.id)
     assertEquals("articles", resource.data.type)
@@ -92,6 +103,16 @@ class JsonApiTest {
   fun multiple_resources() {
     val resources = assertComparisons<JsonApiDocument.Resources>(MultipleResourcesJson)
 
+    assertEquals(resources, resources.asResources)
+    assertEquals(resources, resources.asResourcesOrErrors)
+    assertNotNull(resources.asResourcesOrNull)
+    assertNotNull(resources.asResourcesOrErrorsOrNull)
+    assertNull(resources.asResourceOrNull)
+    val throwable = assertFails {
+      resources.asResource
+    }
+    assertEquals("JsonApiDocument is not a Resource; is Resources", throwable.message)
+
     assertEquals(2, resources.data.size)
 
     val data1 = resources.data.first()
@@ -133,25 +154,45 @@ class JsonApiTest {
 
   @Test
   fun single_resource_identifier() {
-    val resourceIdentifier = assertComparisons<JsonApiDocument.Identifier>(SingleResourceIdentifierJson)
+    val identifier = assertComparisons<JsonApiDocument.Identifier>(SingleResourceIdentifierJson)
 
-    assertEquals("1", resourceIdentifier.data.id)
-    assertEquals("articles", resourceIdentifier.data.type)
-    assertEquals("2019-01-01T00:00:00Z", resourceIdentifier.data.meta?.get("created")?.jsonPrimitive?.contentOrNull)
+    assertEquals(identifier, identifier.asIdentifier)
+    assertEquals(identifier, identifier.asIdentifierOrErrors)
+    assertNotNull(identifier.asIdentifierOrNull)
+    assertNotNull(identifier.asIdentifierOrErrorsOrNull)
+    assertNull(identifier.asIdentifiersOrNull)
+    val throwable = assertFails {
+      identifier.asIdentifiers
+    }
+    assertEquals("JsonApiDocument is not an Identifiers; is Identifier", throwable.message)
+
+    assertEquals("1", identifier.data.id)
+    assertEquals("articles", identifier.data.type)
+    assertEquals("2019-01-01T00:00:00Z", identifier.data.meta?.get("created")?.jsonPrimitive?.contentOrNull)
   }
 
   @Test
   fun multiple_resource_identifiers() {
-    val resourceIdentifiers = assertComparisons<JsonApiDocument.Identifiers>(MultipleResourceIdentifiersJson)
+    val identifiers = assertComparisons<JsonApiDocument.Identifiers>(MultipleResourceIdentifiersJson)
 
-    assertEquals(2, resourceIdentifiers.data.size)
+    assertEquals(identifiers, identifiers.asIdentifiers)
+    assertEquals(identifiers, identifiers.asIdentifiersOrErrors)
+    assertNotNull(identifiers.asIdentifiersOrNull)
+    assertNotNull(identifiers.asIdentifiersOrErrorsOrNull)
+    assertNull(identifiers.asIdentifierOrNull)
+    val throwable = assertFails {
+      identifiers.asIdentifier
+    }
+    assertEquals("JsonApiDocument is not an Identifier; is Identifiers", throwable.message)
 
-    val data1 = resourceIdentifiers.data.first()
+    assertEquals(2, identifiers.data.size)
+
+    val data1 = identifiers.data.first()
 
     assertEquals("1", data1.id)
     assertEquals("articles", data1.type)
 
-    val data2 = resourceIdentifiers.data[1]
+    val data2 = identifiers.data[1]
 
     assertEquals("2", data2.id)
     assertEquals("articles", data2.type)
@@ -160,6 +201,17 @@ class JsonApiTest {
   @Test
   fun meta_only() {
     val meta = assertComparisons<JsonApiDocument.Meta>(MetaOnlyJson)
+
+    assertEquals(meta, meta.asMeta)
+    assertEquals(meta, meta.asMetaOrErrors)
+    assertNotNull(meta.asMetaOrNull)
+    assertNotNull(meta.asMetaOrErrorsOrNull)
+    assertNull(meta.asIdentifierOrNull)
+    val throwable = assertFails {
+      meta.asIdentifier
+    }
+    assertEquals("JsonApiDocument is not an Identifier; is Meta", throwable.message)
+
     assertEquals("bar", meta.meta["foo"]?.jsonPrimitive?.contentOrNull)
     assertEquals("bang", meta.meta["baz"]?.jsonPrimitive?.contentOrNull)
     assertEquals("http://example.com/foo/bar/baz/bang", meta.links?.self?.href)
@@ -169,6 +221,8 @@ class JsonApiTest {
   fun errors_with_pointer() {
     val errorsDocument = assertComparisons<JsonApiDocument.Errors>(ErrorsPointerJson)
     val errors = errorsDocument.errors
+
+    errorsDocument.assertCasts()
 
     assertEquals(1, errors.size)
     assertEquals("422", errors.first().status)
@@ -182,6 +236,8 @@ class JsonApiTest {
     val errorsDocument = assertComparisons<JsonApiDocument.Errors>(ErrorsParameterJson)
     val errors = errorsDocument.errors
 
+    errorsDocument.assertCasts()
+
     assertEquals(1, errors.size)
     assertEquals("422", errors.first().status)
     assertEquals("Invalid Attribute", errors.first().title)
@@ -193,6 +249,8 @@ class JsonApiTest {
   fun errors_with_header() {
     val errorsDocument = assertComparisons<JsonApiDocument.Errors>(ErrorsHeaderJson)
     val errors = errorsDocument.errors
+
+    errorsDocument.assertCasts()
 
     assertEquals(1, errors.size)
     assertEquals("422", errors.first().status)
@@ -262,5 +320,25 @@ class JsonApiTest {
     assertEquals(decodedDocumentString, decodedResourceString)
 
     return subject
+  }
+
+  private fun JsonApiDocument.Errors.assertCasts() {
+    assertEquals(this, asErrors)
+    assertEquals(this, asIdentifierOrErrors)
+    assertEquals(this, asIdentifiersOrErrors)
+    assertEquals(this, asResourceOrErrors)
+    assertEquals(this, asResourcesOrErrors)
+    assertEquals(this, asMetaOrErrors)
+    assertNotNull(asErrorsOrNull)
+    assertNotNull(asIdentifierOrErrorsOrNull)
+    assertNotNull(asIdentifiersOrErrorsOrNull)
+    assertNotNull(asResourceOrErrorsOrNull)
+    assertNotNull(asResourcesOrErrorsOrNull)
+    assertNotNull(asMetaOrErrorsOrNull)
+    assertNull(asIdentifierOrNull)
+    val throwable = assertFails {
+      this.asIdentifier
+    }
+    assertEquals("JsonApiDocument is not an Identifier; is Errors", throwable.message)
   }
 }
