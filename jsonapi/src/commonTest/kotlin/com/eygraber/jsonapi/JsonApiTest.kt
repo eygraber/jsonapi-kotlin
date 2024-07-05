@@ -55,6 +55,7 @@ class JsonApiTest {
 
     assertEquals("2019-01-01T00:00:00Z", resource.meta?.get("created")?.jsonPrimitive?.contentOrNull)
     assertEquals("http://example.com/articles/1", resource.links?.self?.href)
+    assertEquals("http://example.com/comments/5", resource.links?.related?.href)
     assertEquals("http://example.com", resource.links?.additionalLinks?.get("random")?.href)
     assertEquals("Random title", resource.links?.additionalLinks?.get("random")?.title)
 

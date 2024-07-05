@@ -52,6 +52,9 @@ val SingleResourceJson = """
     },
     "links": {
         "self": "http://example.com/articles/1",
+        "related": {
+            "href": "http://example.com/comments/5"
+        },
         "random": {
             "href": "http://example.com",
             "title": "Random title"
