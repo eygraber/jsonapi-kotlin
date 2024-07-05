@@ -58,6 +58,9 @@ class JsonApiTest {
     assertEquals("http://example.com", resource.links?.additionalLinks?.get("random")?.href)
     assertEquals("Random title", resource.links?.additionalLinks?.get("random")?.title)
 
+    assertEquals("1.1", resource.jsonapi?.version)
+    assertEquals("2019-01-01T00:00:00Z", resource.jsonapi?.meta?.get("created")?.jsonPrimitive?.contentOrNull)
+
     val included = resource.included
     assertNotNull(included)
     assertEquals(3, included.size)

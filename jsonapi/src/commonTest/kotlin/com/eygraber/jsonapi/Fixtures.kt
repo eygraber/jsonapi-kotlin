@@ -44,6 +44,12 @@ val SingleResourceJson = """
     "meta": {
         "created": "2019-01-01T00:00:00Z"
     },
+    "jsonapi": {
+        "version": "1.1",
+        "meta": {
+            "created": "2019-01-01T00:00:00Z"
+        }
+    },
     "links": {
         "self": "http://example.com/articles/1",
         "random": {
