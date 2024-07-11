@@ -52,6 +52,9 @@ plugins {
 rootProject.name = "jsonapi-kotlin"
 
 include(":jsonapi")
+include(":jsonapi-typed")
+include(":ksp")
+include(":sample")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
