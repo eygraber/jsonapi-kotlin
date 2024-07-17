@@ -56,6 +56,26 @@ json.encodeToString(document)
 json.encodeToJsonElement(document)
 ```
 
+## Builders
+
+There are convenient builder functions available to assist in creating a `JsonApiDocument` from scratch:
+
+```kotlin
+JsonApiDocument
+  .builder()
+  .identifier(
+    type = "articles",
+    id = JsonApiId("1"),
+  ) {
+    meta {
+      put("created", "2019-01-01T00:00:00Z")
+    }
+  }
+  .build()
+```
+
+See more examples at [JsonApiBuilderTest](./jsonapi/src/commonTest/kotlin/com/eygraber/jsonapi/JsonApiBuilderTest.kt).
+
 ## In Progress
 
 There is a KSP artifact being worked on that will make it easier to extract your domain types from a `JsonApiDocument`. 
