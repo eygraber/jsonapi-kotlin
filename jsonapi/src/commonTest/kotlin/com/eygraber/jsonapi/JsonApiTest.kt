@@ -32,7 +32,7 @@ class JsonApiTest {
     }
     assertEquals("JsonApiDocument is not a Resources; is Resource", throwable.message)
 
-    assertEquals("1", resource.data.id)
+    assertEquals(JsonApiId("1"), resource.data.id)
     assertEquals("articles", resource.data.type)
     assertEquals("JSON:API paints my bikeshed!", resource.data.attributes?.get("title")?.jsonPrimitive?.content)
 
@@ -43,7 +43,7 @@ class JsonApiTest {
     assertNotNull(authorRelationship)
     val authorRelationshipData = authorRelationship.data
     assertIs<JsonApiResourceLinkage.One>(authorRelationshipData)
-    assertEquals("9", authorRelationshipData.data.id)
+    assertEquals(JsonApiId("9"), authorRelationshipData.data.id)
     assertEquals("people", authorRelationshipData.data.type)
 
     assertEquals("http://example.com/people/9", authorRelationship.links?.self?.href)
@@ -54,11 +54,11 @@ class JsonApiTest {
     assertEquals(2, commentRelationship.data.size)
 
     val comment1 = commentRelationship.data.first()
-    assertEquals("5", comment1.id)
+    assertEquals(JsonApiId("5"), comment1.id)
     assertEquals("comments", comment1.type)
 
     val comment2 = commentRelationship.data[1]
-    assertEquals("12", comment2.id)
+    assertEquals(JsonApiId("12"), comment2.id)
     assertEquals("comments", comment2.type)
 
     assertEquals("http://example.com/articles/1", resource.data.links?.self?.href)
@@ -79,7 +79,7 @@ class JsonApiTest {
 
     val included1 = included.find(id = "9", type = "people")
     assertNotNull(included1)
-    assertEquals("9", included1.id)
+    assertEquals(JsonApiId("9"), included1.id)
     assertEquals("people", included1.type)
     assertEquals("Dan", included1.attributes?.get("firstName")?.jsonPrimitive?.contentOrNull)
     assertEquals("Gebhardt", included1.attributes?.get("lastName")?.jsonPrimitive?.contentOrNull)
@@ -88,13 +88,13 @@ class JsonApiTest {
 
     val included2 = included.find(id = "5", type = "comments")
     assertNotNull(included2)
-    assertEquals("5", included2.id)
+    assertEquals(JsonApiId("5"), included2.id)
     assertEquals("comments", included2.type)
     assertEquals("First!", included2.attributes?.get("body")?.jsonPrimitive?.contentOrNull)
 
     val included3 = included.find(id = "12", type = "comments")
     assertNotNull(included3)
-    assertEquals("12", included3.id)
+    assertEquals(JsonApiId("12"), included3.id)
     assertEquals("comments", included3.type)
     assertEquals("I like XML better", included3.attributes?.get("body")?.jsonPrimitive?.contentOrNull)
   }
@@ -117,13 +117,13 @@ class JsonApiTest {
 
     val data1 = resources.data.first()
 
-    assertEquals("1", data1.id)
+    assertEquals(JsonApiId("1"), data1.id)
     assertEquals("articles", data1.type)
     assertEquals("JSON:API paints my bikeshed!", data1.attributes?.get("title")?.jsonPrimitive?.content)
 
     val data2 = resources.data[1]
 
-    assertEquals("2", data2.id)
+    assertEquals(JsonApiId("2"), data2.id)
     assertEquals("articles", data2.type)
     assertEquals("Rails is Omakase", data2.attributes?.get("title")?.jsonPrimitive?.content)
 
@@ -133,7 +133,7 @@ class JsonApiTest {
 
     val included1 = included.find(id = "9", type = "people")
     assertNotNull(included1)
-    assertEquals("9", included1.id)
+    assertEquals(JsonApiId("9"), included1.id)
     assertEquals("people", included1.type)
     assertEquals("Dan", included1.attributes?.get("firstName")?.jsonPrimitive?.contentOrNull)
     assertEquals("Gebhardt", included1.attributes?.get("lastName")?.jsonPrimitive?.contentOrNull)
@@ -141,13 +141,13 @@ class JsonApiTest {
 
     val included2 = included.find(id = "5", type = "comments")
     assertNotNull(included2)
-    assertEquals("5", included2.id)
+    assertEquals(JsonApiId("5"), included2.id)
     assertEquals("comments", included2.type)
     assertEquals("First!", included2.attributes?.get("body")?.jsonPrimitive?.contentOrNull)
 
     val included3 = included.find(id = "12", type = "comments")
     assertNotNull(included3)
-    assertEquals("12", included3.id)
+    assertEquals(JsonApiId("12"), included3.id)
     assertEquals("comments", included3.type)
     assertEquals("I like XML better", included3.attributes?.get("body")?.jsonPrimitive?.contentOrNull)
   }
@@ -166,7 +166,7 @@ class JsonApiTest {
     }
     assertEquals("JsonApiDocument is not an Identifiers; is Identifier", throwable.message)
 
-    assertEquals("1", identifier.data.id)
+    assertEquals(JsonApiId("1"), identifier.data.id)
     assertEquals("articles", identifier.data.type)
     assertEquals("2019-01-01T00:00:00Z", identifier.data.meta?.get("created")?.jsonPrimitive?.contentOrNull)
   }
@@ -189,12 +189,12 @@ class JsonApiTest {
 
     val data1 = identifiers.data.first()
 
-    assertEquals("1", data1.id)
+    assertEquals(JsonApiId("1"), data1.id)
     assertEquals("articles", data1.type)
 
     val data2 = identifiers.data[1]
 
-    assertEquals("2", data2.id)
+    assertEquals(JsonApiId("2"), data2.id)
     assertEquals("articles", data2.type)
   }
 
@@ -229,6 +229,21 @@ class JsonApiTest {
     assertEquals("Invalid Attribute", errors.first().title)
     assertEquals("Title is required", errors.first().detail)
     assertEquals("/data/attributes/title", errors.first().source?.pointer)
+  }
+
+  @Test
+  fun errors_with_meta() {
+    val errorsDocument = assertComparisons<JsonApiDocument.Errors>(ErrorsWithMetaJson)
+    val errors = errorsDocument.errors
+
+    errorsDocument.assertCasts()
+
+    assertEquals(1, errors.size)
+    assertEquals("422", errors.first().status)
+    assertEquals("Invalid Attribute", errors.first().title)
+    assertEquals("Title is required", errors.first().detail)
+    assertEquals("/data/attributes/title", errors.first().source?.pointer)
+    assertEquals("2019-01-01T00:00:00Z", errors.first().meta?.get("created")?.jsonPrimitive?.contentOrNull)
   }
 
   @Test
