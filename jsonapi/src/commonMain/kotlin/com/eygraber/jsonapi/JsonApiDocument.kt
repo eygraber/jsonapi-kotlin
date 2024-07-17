@@ -1,5 +1,6 @@
 package com.eygraber.jsonapi
 
+import com.eygraber.jsonapi.builders.JsonApiDocumentBuilder
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 
@@ -77,6 +78,14 @@ public sealed interface JsonApiDocument {
   ) : JsonApiDocument, IdentifierOrErrors, IdentifiersOrErrors, ResourceOrErrors, ResourcesOrErrors, MetaOrErrors {
     public val aboutLink: JsonApiLink? = links?.additionalLinks?.get("about")
     public val type: JsonApiLink? = links?.additionalLinks?.get("type")
+  }
+
+  public companion object {
+    public fun builder(
+      meta: JsonObject? = null,
+      jsonapi: JsonApiObject? = null,
+      links: JsonApiLinks? = null,
+    ): JsonApiDocumentBuilder = JsonApiDocumentBuilder(meta, jsonapi, links)
   }
 }
 

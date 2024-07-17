@@ -8,12 +8,14 @@ import kotlinx.serialization.json.JsonObject
  */
 @Serializable
 public data class JsonApiResourceIdentifier(
-  public val id: String? = null,
-  public val lid: String? = null,
   public val type: String,
+  public val id: JsonApiId,
+  public val lid: JsonApiId = JsonApiId.NoId,
   public val meta: JsonObject? = null,
 ) {
-  public val idOrLid: String = requireNotNull(id ?: lid) {
-    "A JsonApiResourceIdentifier must have a non null id or a non null lid"
+  init {
+    requireNotNull(id.isSpecified || lid.isSpecified) {
+      "A JsonApiResourceIdentifier must have a non null id or a non null lid"
+    }
   }
 }

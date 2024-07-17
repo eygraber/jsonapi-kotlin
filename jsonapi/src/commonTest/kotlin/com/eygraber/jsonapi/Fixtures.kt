@@ -3,8 +3,8 @@ package com.eygraber.jsonapi
 val SingleResourceJson = """
 {
     "data": {
-        "id": "1",
         "type": "articles",
+        "id": "1",
         "attributes": {
             "title": "JSON:API paints my bikeshed!"
         },
@@ -14,8 +14,8 @@ val SingleResourceJson = """
                     "self": "http://example.com/people/9"
                 },
                 "data": {
-                    "id": "9",
-                    "type": "people"
+                    "type": "people",
+                    "id": "9"
                 },
                 "meta": {
                     "created": "2019-01-01T00:00:00Z"
@@ -24,12 +24,12 @@ val SingleResourceJson = """
             "comments": {
                 "data": [
                     {
-                        "id": "5",
-                        "type": "comments"
+                        "type": "comments",
+                        "id": "5"
                     },
                     {
-                        "id": "12",
-                        "type": "comments"
+                        "type": "comments",
+                        "id": "12"
                     }
                 ]
             }
@@ -62,8 +62,8 @@ val SingleResourceJson = """
     },
     "included": [
         {
-            "id": "9",
             "type": "people",
+            "id": "9",
             "attributes": {
                 "firstName": "Dan",
                 "lastName": "Gebhardt",
@@ -74,15 +74,15 @@ val SingleResourceJson = """
             }
         },
         {
-            "id": "5",
             "type": "comments",
+            "id": "5",
             "attributes": {
                 "body": "First!"
             }
         },
         {
-            "id": "12",
             "type": "comments",
+            "id": "12",
             "attributes": {
                 "body": "I like XML better"
             }
@@ -95,54 +95,54 @@ val MultipleResourcesJson = """
 {
     "data": [
         {
-            "id": "1",
             "type": "articles",
+            "id": "1",
             "attributes": {
                 "title": "JSON:API paints my bikeshed!"
             },
             "relationships": {
                 "author": {
                     "data": {
-                        "id": "9",
-                        "type": "people"
+                        "type": "people",
+                        "id": "9"
                     }
                 },
                 "comments": {
                     "data": [
                         {
-                            "id": "5",
-                            "type": "comments"
+                            "type": "comments",
+                            "id": "5"
                         },
                         {
-                            "id": "12",
-                            "type": "comments"
+                            "type": "comments",
+                            "id": "12"
                         }
                     ]
                 }
             }
         },
         {
-            "id": "2",
             "type": "articles",
+            "id": "2",
             "attributes": {
                 "title": "Rails is Omakase"
             },
             "relationships": {
                 "author": {
                     "data": {
-                        "id": "9",
-                        "type": "people"
+                        "type": "people",
+                        "id": "9"
                     }
                 },
                 "comments": {
                     "data": [
                         {
-                            "id": "3",
-                            "type": "comments"
+                            "type": "comments",
+                            "id": "3"
                         },
                         {
-                            "id": "4",
-                            "type": "comments"
+                            "type": "comments",
+                            "id": "4"
                         }
                     ]
                 }
@@ -151,8 +151,8 @@ val MultipleResourcesJson = """
     ],
     "included": [
         {
-            "id": "9",
             "type": "people",
+            "id": "9",
             "attributes": {
                 "firstName": "Dan",
                 "lastName": "Gebhardt",
@@ -160,15 +160,15 @@ val MultipleResourcesJson = """
             }
         },
         {
-            "id": "5",
             "type": "comments",
+            "id": "5",
             "attributes": {
                 "body": "First!"
             }
         },
         {
-            "id": "12",
             "type": "comments",
+            "id": "12",
             "attributes": {
                 "body": "I like XML better"
             }
@@ -180,8 +180,8 @@ val MultipleResourcesJson = """
 val SingleResourceIdentifierJson = """
 {
     "data": {
-        "id": "1",
         "type": "articles",
+        "id": "1",
         "meta": {
             "created": "2019-01-01T00:00:00Z"
         }
@@ -193,12 +193,12 @@ val MultipleResourceIdentifiersJson = """
 {
     "data": [
         {
-            "id": "1",
-            "type": "articles"
+            "type": "articles",
+            "id": "1"
         },
         {
-            "id": "2",
-            "type": "articles"
+            "type": "articles",
+            "id": "2"
         }
     ]
 }
@@ -225,6 +225,24 @@ val ErrorsPointerJson = """
             "detail": "Title is required",
             "source": {
                 "pointer": "/data/attributes/title"
+            }
+        }
+    ]
+}
+""".trim()
+
+val ErrorsWithMetaJson = """
+{
+    "errors": [
+        {
+            "status": "422",
+            "title": "Invalid Attribute",
+            "detail": "Title is required",
+            "source": {
+                "pointer": "/data/attributes/title"
+            },
+            "meta": {
+                "created": "2019-01-01T00:00:00Z"
             }
         }
     ]
@@ -280,8 +298,8 @@ val ErrorsWithPointerAndParameterJson = """
 val InvalidDocumentDataAndErrors = """
 {
     "data": {
-        "id": "1",
-        "type": "articles"
+        "type": "articles",
+        "id": "1"
     },
     "errors": [
         {
@@ -312,8 +330,8 @@ val InvalidDocumentIncludedResourcesWithoutData = """
     ],
     "included": [
         {
-            "id": "9",
             "type": "people",
+            "id": "9",
             "attributes": {
                 "firstName": "Dan",
                 "lastName": "Gebhardt",
