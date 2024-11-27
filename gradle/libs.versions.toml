@@ -11,7 +11,7 @@ detekt = "1.23.7"
 
 dokka = "1.9.20"
 
-kotlin = "2.0.21"
+kotlin = "2.1.0"
 kotlinxSerialization = "1.7.3"
 
 ktlint = "1.4.1"
