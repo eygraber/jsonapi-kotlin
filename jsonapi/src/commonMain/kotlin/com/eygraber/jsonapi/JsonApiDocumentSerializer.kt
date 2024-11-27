@@ -48,18 +48,12 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
           val meta = jsonObject["meta"]?.jsonObject
           val jsonapi = jsonObject["jsonapi"]?.let { input.json.decodeFromJsonElement(JsonApiObject.serializer(), it) }
 
-          val links = jsonObject["links"]?.let {
-            input.json.decodeFromJsonElement(
-              JsonApiLinks.serializer(),
-              it,
-            )
+          val links = jsonObject["links"]?.let { links ->
+            input.json.decodeFromJsonElement(JsonApiLinks.serializer(), links)
           }
 
-          val included = jsonObject["included"]?.let {
-            input.json.decodeFromJsonElement(
-              ListSerializer(JsonApiResource.serializer()),
-              it,
-            )
+          val included = jsonObject["included"]?.let { included ->
+            input.json.decodeFromJsonElement(ListSerializer(JsonApiResource.serializer()), included)
           }
 
           if("attributes" in data) {
@@ -85,18 +79,12 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
           val meta = jsonObject["meta"]?.jsonObject
           val jsonapi = jsonObject["jsonapi"]?.let { input.json.decodeFromJsonElement(JsonApiObject.serializer(), it) }
 
-          val links = jsonObject["links"]?.let {
-            input.json.decodeFromJsonElement(
-              JsonApiLinks.serializer(),
-              it,
-            )
+          val links = jsonObject["links"]?.let { links ->
+            input.json.decodeFromJsonElement(JsonApiLinks.serializer(), links)
           }
 
-          val included = jsonObject["included"]?.let {
-            input.json.decodeFromJsonElement(
-              ListSerializer(JsonApiResource.serializer()),
-              it,
-            )
+          val included = jsonObject["included"]?.let { included ->
+            input.json.decodeFromJsonElement(ListSerializer(JsonApiResource.serializer()), included)
           }
 
           if(data.isEmpty() || "attributes" in data.first().jsonObject) {
@@ -122,7 +110,10 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
       }
 
       hasErrors -> JsonApiDocument.Errors(
-        errors = input.json.decodeFromJsonElement(ListSerializer(JsonApiError.serializer()), jsonObject["errors"]!!),
+        errors = input.json.decodeFromJsonElement(
+          deserializer = ListSerializer(JsonApiError.serializer()),
+          element = requireNotNull(jsonObject["errors"]),
+        ),
         meta = jsonObject["meta"]?.jsonObject,
         jsonapi = jsonObject["jsonapi"]?.let { input.json.decodeFromJsonElement(JsonApiObject.serializer(), it) },
         links = jsonObject["links"]?.let { input.json.decodeFromJsonElement(JsonApiLinks.serializer(), it) },
@@ -187,16 +178,16 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
 
           value.meta?.let { put("meta", it) }
           value.jsonapi?.let { put("jsonapi", output.json.encodeToJsonElement(JsonApiObject.serializer(), it)) }
-          value.links?.let {
+          value.links?.let { links ->
             put(
               "links",
-              output.json.encodeToJsonElement(JsonApiLinks.serializer(), it),
+              output.json.encodeToJsonElement(JsonApiLinks.serializer(), links),
             )
           }
-          value.included?.let {
+          value.included?.let { included ->
             put(
               "included",
-              output.json.encodeToJsonElement(ListSerializer(JsonApiResource.serializer()), it),
+              output.json.encodeToJsonElement(ListSerializer(JsonApiResource.serializer()), included),
             )
           }
         }
@@ -204,10 +195,10 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
         is JsonApiDocument.Meta -> {
           put("meta", value.meta)
           value.jsonapi?.let { put("jsonapi", output.json.encodeToJsonElement(JsonApiObject.serializer(), it)) }
-          value.links?.let {
+          value.links?.let { links ->
             put(
               "links",
-              output.json.encodeToJsonElement(JsonApiLinks.serializer(), it),
+              output.json.encodeToJsonElement(JsonApiLinks.serializer(), links),
             )
           }
         }
