@@ -54,8 +54,13 @@ public data class JsonApiLink(
     override fun serialize(encoder: Encoder, value: JsonApiLink) {
       (encoder as JsonEncoder).encodeJsonElement(
         @Suppress("ComplexCondition")
-        if(value.shouldSerializeHrefAsPrimitive && value.rel == null && value.describedBy == null &&
-          value.title == null && value.type == null && value.hrefLang == null && value.meta == null
+        if(value.shouldSerializeHrefAsPrimitive &&
+          value.rel == null &&
+          value.describedBy == null &&
+          value.title == null &&
+          value.type == null &&
+          value.hrefLang == null &&
+          value.meta == null
         ) {
           JsonPrimitive(value.href)
         }
