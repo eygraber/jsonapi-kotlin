@@ -1,3 +1,5 @@
+@file:Suppress("TrimMultilineRawString")
+
 package com.eygraber.jsonapi
 
 val SingleResourceJson = """

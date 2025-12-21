@@ -120,13 +120,11 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
       )
 
       "meta" in jsonObject -> when(val meta = jsonObject["meta"]) {
-        is JsonObject -> {
-          JsonApiDocument.Meta(
-            meta = meta,
-            jsonapi = jsonObject["jsonapi"]?.let { input.json.decodeFromJsonElement(JsonApiObject.serializer(), it) },
-            links = jsonObject["links"]?.let { input.json.decodeFromJsonElement(JsonApiLinks.serializer(), it) },
-          )
-        }
+        is JsonObject -> JsonApiDocument.Meta(
+          meta = meta,
+          jsonapi = jsonObject["jsonapi"]?.let { input.json.decodeFromJsonElement(JsonApiObject.serializer(), it) },
+          links = jsonObject["links"]?.let { input.json.decodeFromJsonElement(JsonApiLinks.serializer(), it) },
+        )
 
         else -> error("meta must be an object")
       }

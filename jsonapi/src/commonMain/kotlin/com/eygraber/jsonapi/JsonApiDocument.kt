@@ -1,3 +1,5 @@
+@file:Suppress("NullableToStringCall")
+
 package com.eygraber.jsonapi
 
 import com.eygraber.jsonapi.builders.JsonApiDocumentBuilder
