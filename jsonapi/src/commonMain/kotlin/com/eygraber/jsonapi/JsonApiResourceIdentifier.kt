@@ -14,7 +14,7 @@ public data class JsonApiResourceIdentifier(
   public val meta: JsonObject? = null,
 ) {
   init {
-    requireNotNull(id.isSpecified || lid.isSpecified) {
+    require(id.isSpecified || lid.isSpecified) {
       "A JsonApiResourceIdentifier must have a non null id or a non null lid"
     }
   }

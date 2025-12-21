@@ -3,6 +3,7 @@ package com.eygraber.jsonapi.builders
 import com.eygraber.jsonapi.JsonApiLink
 import com.eygraber.jsonapi.JsonApiLinks
 
+@Suppress("ClassOrdering")
 public class JsonApiLinksBuilder {
   private var selfLink: JsonApiLink? = null
   private var relatedLink: JsonApiLink? = null

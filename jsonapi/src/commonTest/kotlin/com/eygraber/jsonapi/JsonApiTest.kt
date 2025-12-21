@@ -1,3 +1,5 @@
+@file:Suppress("MaxChainedCallsOnSameLine")
+
 package com.eygraber.jsonapi
 
 import kotlinx.serialization.json.Json

@@ -1,18 +1,16 @@
 plugins {
+  id("com.android.lint")
   id("com.eygraber.conventions-kotlin-multiplatform")
-  id("com.eygraber.conventions-android-library")
-  id("com.eygraber.conventions-detekt")
+  id("com.eygraber.conventions-android-kmp-library")
+  id("com.eygraber.conventions-detekt2")
   id("com.eygraber.conventions-publish-maven-central")
   alias(libs.plugins.kotlinxSerialization)
-}
-
-android {
-  namespace = "com.eygraber.jsonapi"
 }
 
 kotlin {
   allKmpTargets(
     project = project,
+    androidNamespace = "com.eygraber.jsonapi",
   )
 
   sourceSets {
