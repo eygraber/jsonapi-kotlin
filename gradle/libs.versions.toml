@@ -1,11 +1,11 @@
 [versions]
-agp = "8.13.2"
+agp = "9.0.0"
 
 android-sdk-compile = "34"
 android-sdk-target = "34"
 android-sdk-min = "21"
 
-conventions = "0.0.94"
+conventions = "0.0.97"
 
 detekt = "2.0.0-alpha.1"
 
@@ -16,7 +16,7 @@ kotlinxSerialization = "1.9.0"
 
 ktlint = "1.8.0"
 
-publish = "0.35.0"
+publish = "0.36.0"
 
 [plugins]
 conventions = { id = "com.eygraber.conventions", version.ref = "conventions" }
