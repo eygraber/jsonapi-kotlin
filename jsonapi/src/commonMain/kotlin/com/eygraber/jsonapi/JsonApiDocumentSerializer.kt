@@ -64,7 +64,8 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
               links = links,
               included = included,
             )
-          } else {
+          }
+          else {
             JsonApiDocument.Identifier(
               data = input.json.decodeFromJsonElement(JsonApiResourceIdentifier.serializer(), data),
               meta = meta,
@@ -95,7 +96,8 @@ internal object JsonApiDocumentSerializer : KSerializer<JsonApiDocument> {
               links = links,
               included = included,
             )
-          } else {
+          }
+          else {
             JsonApiDocument.Identifiers(
               data = data.map { input.json.decodeFromJsonElement(JsonApiResourceIdentifier.serializer(), it) },
               meta = meta,
