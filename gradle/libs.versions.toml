@@ -7,7 +7,7 @@ android-sdk-min = "21"
 
 conventions = "0.0.98"
 
-detekt = "2.0.0-alpha.1"
+detekt = "2.0.0-alpha.2"
 
 dokka = "2.1.0"
 
@@ -15,6 +15,8 @@ kotlin = "2.3.0"
 kotlinxSerialization = "1.10.0"
 
 ktlint = "1.8.0"
+
+ktlintCustomRules = "0.1.1"
 
 publish = "0.36.0"
 
@@ -34,4 +36,9 @@ kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 # not actually used; just here so renovate picks it up
+# noinspection UnusedVersionCatalogEntry
 ktlint = { module = "com.pinterest.ktlint:ktlint-bom", version.ref = "ktlint" }
+
+# just here so renovate picks it up
+# noinspection UnusedVersionCatalogEntry
+ktlintCustomRules = { module = "com.eygraber.ktlint.rules:ktlint-rules", version.ref = "ktlintCustomRules" }
