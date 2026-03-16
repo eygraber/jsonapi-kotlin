@@ -23,7 +23,6 @@ kotlin {
     commonTest {
       dependencies {
         implementation(kotlin("test"))
-        implementation(kotlin("test-annotations-common"))
       }
     }
   }
