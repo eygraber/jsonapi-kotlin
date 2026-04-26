@@ -1,5 +1,7 @@
 package com.eygraber.jsonapi
 
+import com.eygraber.jsonapi.JsonApiResourceLinkage.Many
+import com.eygraber.jsonapi.JsonApiResourceLinkage.One
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,61 +19,61 @@ import kotlinx.serialization.json.JsonObject
 /**
  * https://jsonapi.org/format/#document-resource-object-linkage
  */
-@Serializable(with = JsonApiResourceLinkage.Serializer::class)
-public sealed class JsonApiResourceLinkage {
+@Serializable(with = JsonApiResourceLinkageSerializer::class)
+public sealed interface JsonApiResourceLinkage {
   @Serializable
   @SerialName("One")
   public data class One(
     val data: JsonApiResourceIdentifier,
-  ) : JsonApiResourceLinkage()
+  ) : JsonApiResourceLinkage
 
   @Serializable
   @SerialName("Many")
   public data class Many(
     val data: List<JsonApiResourceIdentifier>,
-  ) : JsonApiResourceLinkage()
+  ) : JsonApiResourceLinkage
+}
 
-  internal object Serializer : KSerializer<JsonApiResourceLinkage> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("JsonApiResourceLinkage") {
-      element<JsonApiResourceIdentifier>("One", isOptional = true)
-      element<List<JsonApiResourceIdentifier>>("Many", isOptional = true)
+internal object JsonApiResourceLinkageSerializer : KSerializer<JsonApiResourceLinkage> {
+  override val descriptor: SerialDescriptor = buildClassSerialDescriptor("JsonApiResourceLinkage") {
+    element<JsonApiResourceIdentifier>("One", isOptional = true)
+    element<List<JsonApiResourceIdentifier>>("Many", isOptional = true)
+  }
+
+  override fun serialize(encoder: Encoder, value: JsonApiResourceLinkage) {
+    when(value) {
+      is One -> encoder.encodeSerializableValue(
+        serializer = JsonApiResourceIdentifier.serializer(),
+        value = value.data,
+      )
+
+      is Many -> encoder.encodeSerializableValue(
+        serializer = ListSerializer(JsonApiResourceIdentifier.serializer()),
+        value = value.data,
+      )
     }
+  }
 
-    override fun serialize(encoder: Encoder, value: JsonApiResourceLinkage) {
-      when(value) {
-        is One -> encoder.encodeSerializableValue(
-          serializer = JsonApiResourceIdentifier.serializer(),
-          value = value.data,
-        )
+  override fun deserialize(decoder: Decoder): JsonApiResourceLinkage {
+    require(decoder is JsonDecoder)
+    return when(val jsonElement = decoder.decodeJsonElement()) {
+      is JsonObject -> One(
+        decoder.json.decodeFromJsonElement(
+          deserializer = JsonApiResourceIdentifier.serializer(),
+          element = jsonElement,
+        ),
+      )
 
-        is Many -> encoder.encodeSerializableValue(
-          serializer = ListSerializer(JsonApiResourceIdentifier.serializer()),
-          value = value.data,
-        )
-      }
-    }
+      is JsonArray -> Many(
+        decoder.json.decodeFromJsonElement(
+          deserializer = ListSerializer(JsonApiResourceIdentifier.serializer()),
+          element = jsonElement,
+        ),
+      )
 
-    override fun deserialize(decoder: Decoder): JsonApiResourceLinkage {
-      require(decoder is JsonDecoder)
-      return when(val jsonElement = decoder.decodeJsonElement()) {
-        is JsonObject -> One(
-          decoder.json.decodeFromJsonElement(
-            deserializer = JsonApiResourceIdentifier.serializer(),
-            element = jsonElement,
-          ),
-        )
-
-        is JsonArray -> Many(
-          decoder.json.decodeFromJsonElement(
-            deserializer = ListSerializer(JsonApiResourceIdentifier.serializer()),
-            element = jsonElement,
-          ),
-        )
-
-        else -> throw SerializationException(
-          "Unexpected JSON element for JsonApiResourceLinkage: $jsonElement",
-        )
-      }
+      else -> throw SerializationException(
+        "Unexpected JSON element for JsonApiResourceLinkage: $jsonElement",
+      )
     }
   }
 }
