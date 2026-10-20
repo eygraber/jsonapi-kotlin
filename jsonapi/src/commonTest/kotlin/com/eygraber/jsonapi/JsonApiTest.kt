@@ -277,41 +277,44 @@ class JsonApiTest {
 
   @Test
   fun errors_with_more_than_one_property_in_source_throws() {
-    val throwable = assertFails {
-      json.decodeFromString<JsonApiDocument>(ErrorsWithPointerAndParameterJson)
-    }
-
-    assertIs<IllegalStateException>(throwable)
-    assertEquals(
-      expected = "Source should only have one of pointer, parameter, and header",
-      actual = throwable.message,
+    assertDecodingFailsWith<IllegalStateException>(
+      fixture = ErrorsWithPointerAndParameterJson,
+      expectedMessage = "Source should only have one of pointer, parameter, and header",
     )
   }
 
   @Test
   fun document_with_data_and_error_fails() {
-    val throwable = assertFails {
-      json.decodeFromString<JsonApiDocument>(InvalidDocumentDataAndErrors)
-    }
-
-    assertIs<RuntimeException>(throwable)
-    assertEquals(
-      expected = "\"data\" and \"errors\" can't both be present at the top level of a JSON:API document",
-      actual = throwable.message,
+    assertDecodingFailsWith<IllegalStateException>(
+      fixture = InvalidDocumentDataAndErrors,
+      expectedMessage = "\"data\" and \"errors\" can't both be present at the top level of a JSON:API document",
     )
   }
 
   @Test
   fun document_with_included_and_not_data_fails() {
+    assertDecodingFailsWith<IllegalStateException>(
+      fixture = InvalidDocumentIncludedResourcesWithoutData,
+      expectedMessage = "\"included\" can't be present at the top level of a JSON:API document " +
+        "without \"data\" being present",
+    )
+  }
+
+  private inline fun <reified T : Throwable> assertDecodingFailsWith(
+    fixture: String,
+    expectedMessage: String,
+  ) {
     val throwable = assertFails {
-      json.decodeFromString<JsonApiDocument>(InvalidDocumentIncludedResourcesWithoutData)
+      json.decodeFromString<JsonApiDocument>(fixture)
     }
 
-    assertIs<RuntimeException>(throwable)
-    assertEquals(
-      expected = "\"included\" can't be present at the top level of a JSON:API document without \"data\" being present",
-      actual = throwable.message,
+    // kotlinx.serialization wraps exceptions thrown while decoding in a JsonDecodingException
+    val cause = assertNotNull(
+      generateSequence(throwable) { it.cause }.firstOrNull { it.message == expectedMessage },
+      "Expected a cause with message <$expectedMessage> but was $throwable",
     )
+
+    assertIs<T>(cause)
   }
 
   private inline fun <reified T : Any> assertComparisons(fixture: String): T {
